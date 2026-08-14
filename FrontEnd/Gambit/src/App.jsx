@@ -1,23 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-import { useEffect } from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('');
+  const [ws, setWs] = useState(null);
 
   useEffect(() => {
+    const websocket = new WebSocket('ws://localhost:8080');
+    setWs(websocket);
 
-        const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ count: count })
-    };
+    return () => {
+        websocket.close();
+    }
+  }, []);
 
-    fetch('http://localhost:3000/test', requestOptions)
-  }, [count]);
+    function sendMessage() {
+      ws.send(message);
+    }
 
   return (
     <>
@@ -27,19 +29,15 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
         <button
           type="button"
           className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={sendMessage}
         >
-          Count is {count}
+          Send data
         </button>
+        <label for="username">Message to send to server:</label>
+        <textarea rows="4" cols="50" placeholder="Enter your comment here..." onChange={(e) => setMessage(e.target.value)}></textarea>
       </section>
 
       <div className="ticks"></div>
