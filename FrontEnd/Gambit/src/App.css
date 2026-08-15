@@ -182,3 +182,20 @@
     border-right-color: var(--border);
   }
 }
+
+.container {
+  overflow-y: auto;
+  height: 300px;
+  width: 100%;
+}
+
+.myMessage {
+  padding: 10px;
+  text-align: left;
+}
+
+.otherMessage {
+  padding: 10px;
+  text-align: right;
+}
+

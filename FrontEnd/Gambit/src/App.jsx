@@ -2,15 +2,21 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { ChatDisplay } from './components/ChatDisplay.jsx'
 import './App.css'
 
 function App() {
   const [message, setMessage] = useState('');
   const [ws, setWs] = useState(null);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const websocket = new WebSocket('ws://localhost:8080');
     setWs(websocket);
+
+    websocket.onmessage = (event) => {
+      setMessages((prevMessages) => [...prevMessages, { user: 'server', text: event.data }]);
+    }
 
     return () => {
         websocket.close();
@@ -19,6 +25,7 @@ function App() {
 
     function sendMessage() {
       ws.send(message);
+      setMessages((prevMessages) => [...prevMessages, { user: 'me', text: message }]);
     }
 
   return (
@@ -29,6 +36,7 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
+        <ChatDisplay messagesProp = {messages} />
         <button
           type="button"
           className="counter"
