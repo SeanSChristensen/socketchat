@@ -4,6 +4,7 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import { ChatDisplay } from './components/ChatDisplay.jsx'
 import './App.css'
+import { webSocketService } from './service/webSocketService.jsx'
 
 function App() {
   const [message, setMessage] = useState('');
@@ -12,21 +13,17 @@ function App() {
 
   useEffect(() => {
     const websocket = new WebSocket('ws://localhost:8080');
-    setWs(websocket);
+    const TestWsService = webSocketService(websocket);
+    setWs(TestWsService);
 
-    websocket.onmessage = (event) => {
-      setMessages((prevMessages) => [...prevMessages, { user: 'server', text: event.data }]);
-    }
+    TestWsService.addListener((user, data) => {
+      setMessages((prevMessages) => [...prevMessages, { user: user, text: data }]);
+    });
 
     return () => {
         websocket.close();
     }
   }, []);
-
-    function sendMessage() {
-      ws.send(message);
-      setMessages((prevMessages) => [...prevMessages, { user: 'me', text: message }]);
-    }
 
   return (
     <>
@@ -40,7 +37,7 @@ function App() {
         <button
           type="button"
           className="counter"
-          onClick={sendMessage}
+          onClick={() => ws.sendMessage(message)}
         >
           Send data
         </button>
