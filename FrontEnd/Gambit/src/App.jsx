@@ -10,6 +10,8 @@ function App() {
   const [message, setMessage] = useState('');
   const [ws, setWs] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [chats, setChats] = useState(['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4']);
+  const [selectedChat, setSelectedChat] = useState('Chat 1');
 
   useEffect(() => {
     const websocket = new WebSocket('ws://localhost:8080');
@@ -33,6 +35,15 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
+        
+        <select value={selectedChat} onChange={(e) => setSelectedChat(e.target.value)}>
+          {chats.map((chat, index) => (
+            <option key={index} value={chat}>
+              {chat}
+            </option>
+          ))}
+        </select>
+
         <ChatDisplay messagesProp = {messages} />
         <button
           type="button"
