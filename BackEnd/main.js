@@ -22,16 +22,25 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-
-
 wss.on('connection', (ws) => {
   console.log('New client connected');
   
-  ws.send('Welcome to the WebSocket server!');
+  ws.send(JSON.stringify({type: 'message', data: 'Welcome to the WebSocket server!'}));
 
   ws.on('message', (message) => {
-    console.log(`Received: ${message}`);
-    ws.send(`Server received your message: ${message}`);
+    const parsedMessage = JSON.parse(message);
+    console.log(parsedMessage);
+    
+    if(parsedMessage.type === 'message') {
+        console.log(`Received: ${parsedMessage.data}`);
+        ws.send(JSON.stringify({type: 'message', data: `Server received your message: ${parsedMessage.data}`}));
+        return;
+    }
+    if(parsedMessage.type === 'chat') {
+      const chat = [{user: 'server', text: 'Welcome to the chat!'},{user: 'me', text: 'Cheers mate!'}];
+      ws.send(JSON.stringify({type: 'chat', data: chat}));
+        return;
+    }
   });
 
   ws.on('close', () => {

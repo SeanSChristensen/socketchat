@@ -4,21 +4,49 @@ export const webSocketService = (websocket) => {
     
     const sendMessage = (message) => {
         if (websocket.readyState === WebSocket.OPEN) {
-            websocket.send(message);
-            listeners.forEach((listener) => listener('me',message));
+            websocket.send(JSON.stringify({type: 'message', data: message}));
+            listeners.forEach((listener) => {                
+                if(listener.name === 'message'){
+                    listener.function('me',message)
+                }}
+        );
         }
     }
 
-    const addListener = (listener) => {
-        listeners.push(listener);
+    const sendChatRequest = (selectedChat) => {
+        if (websocket.readyState === WebSocket.OPEN) {
+            websocket.send(JSON.stringify({type: 'chat', data: selectedChat}));
+        }
     }
 
+    const addListener = (name,listener) => {
+        listeners.push({name: name, function: listener});
+    }
+
+
+    //Todo, make the listners flow correct. For not it loops over each listener and check the type of the message for each
     websocket.onmessage = (event) => {
-        listeners.forEach((listener) => listener('server', event.data));
+        const parsedEvent = JSON.parse(event.data);
+
+        listeners.forEach((listener) => {        
+                if(parsedEvent.type === 'message'){
+                    if(listener.name === 'message'){
+                        listener.function('server', parsedEvent.data)
+                        return;
+                    }
+                }
+                if(parsedEvent.type === 'chat'){
+                    if(listener.name === 'chat'){
+                        listener.function(parsedEvent.data)
+                        return;
+                    }
+            }
+        });
     }
 
     return {
         sendMessage,
+        sendChatRequest,
         addListener
     };
 }

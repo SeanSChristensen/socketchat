@@ -18,14 +18,24 @@ function App() {
     const TestWsService = webSocketService(websocket);
     setWs(TestWsService);
 
-    TestWsService.addListener((user, data) => {
+    TestWsService.addListener('message',(user, data) => {
       setMessages((prevMessages) => [...prevMessages, { user: user, text: data }]);
+    });
+    TestWsService.addListener('chat',(chat) => {
+      setMessages(chat);
     });
 
     return () => {
         websocket.close();
     }
   }, []);
+
+  useEffect(() => {
+    if (ws!== null) {
+          console.log(selectedChat);
+          ws.sendChatRequest(selectedChat);
+    }
+  }, [selectedChat]);
 
   return (
     <>
