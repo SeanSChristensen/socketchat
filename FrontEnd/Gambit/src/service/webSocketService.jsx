@@ -2,9 +2,9 @@
 export const webSocketService = (websocket) => {
     const listeners = [];
     
-    const sendMessage = (message) => {
+    const sendMessage = (user,message) => {
         if (websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify({type: 'message', data: message}));
+            websocket.send(JSON.stringify({type: 'message', data: message, user:user}));
             listeners.forEach((listener) => {                
                 if(listener.name === 'message'){
                     listener.function('me',message)
@@ -31,7 +31,7 @@ export const webSocketService = (websocket) => {
         listeners.forEach((listener) => {        
                 if(parsedEvent.type === 'message'){
                     if(listener.name === 'message'){
-                        listener.function('server', parsedEvent.data)
+                        listener.function(parsedEvent.user, parsedEvent.data)
                         return;
                     }
                 }

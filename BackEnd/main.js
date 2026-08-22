@@ -33,7 +33,7 @@ wss.on('connection', (ws) => {
     
     if(parsedMessage.type === 'message') {
         console.log(`Received: ${parsedMessage.data}`);
-        ws.send(JSON.stringify({type: 'message', data: `Server received your message: ${parsedMessage.data}`}));
+        wss.clients.forEach((client) => client.send(JSON.stringify({type: 'message', data: `${parsedMessage.user}: ${parsedMessage.data}`, user:`${parsedMessage.user}`})))
         return;
     }
     if(parsedMessage.type === 'chat') {
@@ -43,7 +43,7 @@ wss.on('connection', (ws) => {
     }
   });
 
-  ws.on('close', () => {
+  wss.on('close', () => {
     console.log('Client disconnected');
   });
 }); 

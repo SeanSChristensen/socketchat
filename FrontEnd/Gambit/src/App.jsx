@@ -12,6 +12,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [chats, setChats] = useState(['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4']);
   const [selectedChat, setSelectedChat] = useState('Chat 1');
+  const [currentUser, setUser] = useState('');
 
   useEffect(() => {
     const websocket = new WebSocket('ws://localhost:8080');
@@ -29,6 +30,7 @@ function App() {
         websocket.close();
     }
   }, []);
+
 
   useEffect(() => {
     if (ws!== null) {
@@ -54,16 +56,17 @@ function App() {
           ))}
         </select>
 
-        <ChatDisplay messagesProp = {messages} />
+        <ChatDisplay messagesProp = {messages} currentUser={currentUser} />
         <button
           type="button"
           className="counter"
-          onClick={() => ws.sendMessage(message)}
+          onClick={() => ws.sendMessage(currentUser,message)}
         >
           Send data
         </button>
         <label for="username">Message to send to server:</label>
         <textarea rows="4" cols="50" placeholder="Enter your comment here..." onChange={(e) => setMessage(e.target.value)}></textarea>
+        <textarea rows="4" cols="50" placeholder="Name goes here" onChange={(e) => setUser(e.target.value)}></textarea>
       </section>
 
       <div className="ticks"></div>
