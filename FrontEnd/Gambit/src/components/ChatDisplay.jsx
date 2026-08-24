@@ -1,9 +1,9 @@
 export function ChatDisplay({messagesProp,currentUser}){
-    const filteredMessages = messagesProp.filter((message) => message.user !== currentUser)
+    console.log({messagesProp,currentUser})
     return (
         <div className="container">{
-            filteredMessages.map((message, index) => (
-                <p key={index} className={message.user === 'me' ? 'myMessage' : 'otherMessage'}>
+            messagesProp.map((message, index) => (
+                <p key={index} className={message.user === currentUser ? 'myMessage' : 'otherMessage'}>
                     {message.text}
                 </p>
             ))

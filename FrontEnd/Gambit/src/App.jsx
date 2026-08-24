@@ -19,11 +19,12 @@ function App() {
     const TestWsService = webSocketService(websocket);
     setWs(TestWsService);
 
-    TestWsService.addListener('message',(user, data) => {
-      setMessages((prevMessages) => [...prevMessages, { user: user, text: data }]);
+    TestWsService.addListener('message',(data) => {
+      console.log(data)
+      setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data }]);
     });
     TestWsService.addListener('chat',(chat) => {
-      setMessages(chat);
+      setMessages(chat.data);
     });
 
     return () => {
