@@ -20,7 +20,9 @@ function App() {
     setWs(TestWsService);
 
     TestWsService.addListener('message',(data) => {
-      setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data.message }]);
+      if(data.data.chat === selectedChat){
+        setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data.message }]);
+      }
     });
     TestWsService.addListener('chat',(chat) => {
       setMessages(chat.data);
@@ -29,7 +31,7 @@ function App() {
     return () => {
         websocket.close();
     }
-  }, []);
+  }, [selectedChat]);
 
 
   useEffect(() => {
