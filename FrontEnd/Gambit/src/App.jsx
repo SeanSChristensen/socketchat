@@ -20,8 +20,7 @@ function App() {
     setWs(TestWsService);
 
     TestWsService.addListener('message',(data) => {
-      console.log(data)
-      setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data }]);
+      setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data.message }]);
     });
     TestWsService.addListener('chat',(chat) => {
       setMessages(chat.data);
@@ -61,7 +60,7 @@ function App() {
         <button
           type="button"
           className="counter"
-          onClick={() => ws.sendMessage(currentUser,message)}
+          onClick={() => ws.sendMessage(currentUser,message, selectedChat)}
         >
           Send data
         </button>

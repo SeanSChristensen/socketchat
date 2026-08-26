@@ -2,9 +2,9 @@
 export const webSocketService = (websocket) => {
     const listeners = [];
     
-    const sendMessage = (user,message) => {
+    const sendMessage = (user,message, chat) => {
         if (websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify({type: 'message', data: message, user:user}));
+            websocket.send(JSON.stringify({type: 'message', data: {message:message, chat:chat}, user:user}));
         }
     }
 

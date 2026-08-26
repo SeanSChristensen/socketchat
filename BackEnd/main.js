@@ -25,7 +25,7 @@ app.listen(PORT, () => {
 wss.on('connection', (ws) => {
   console.log('New client connected');
   
-  ws.send(JSON.stringify({type: 'message', data: 'Welcome to the WebSocket server!'}));
+  ws.send(JSON.stringify({type: 'message', data: {message: 'Welcome to the WebSocket server!', chat:'Chat 1'}}));
 
   ws.on('message', (message) => {
     const parsedMessage = JSON.parse(message);
@@ -33,7 +33,7 @@ wss.on('connection', (ws) => {
     
     if(parsedMessage.type === 'message') {
         console.log(`Received: ${parsedMessage.data}`);
-        wss.clients.forEach((client) => client.send(JSON.stringify({type: 'message', data: `${parsedMessage.user}: ${parsedMessage.data}`, user:`${parsedMessage.user}`})))
+        wss.clients.forEach((client) => client.send(JSON.stringify({type: 'message', data: { message:`${parsedMessage.user}: ${parsedMessage.data.message}`, chat: `${parsedMessage.data.chat}`}, user:`${parsedMessage.user}`})))
         return;
     }
     if(parsedMessage.type === 'chat') {
