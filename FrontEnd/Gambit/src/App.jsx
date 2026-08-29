@@ -18,28 +18,31 @@ function App() {
     const websocket = new WebSocket('ws://localhost:8080');
     const TestWsService = webSocketService(websocket);
     setWs(TestWsService);
+    return () => {
+        websocket.close();
+    }
+  }, []);
 
-    TestWsService.addListener('message',(data) => {
+  useEffect(() => {
+    if(ws!==null){
+          ws.addListener('message',(data) => {
+            console.log(data.data.chat)
+            console.log(selectedChat)
       if(data.data.chat === selectedChat){
         setMessages((prevMessages) => [...prevMessages, { user: data.user, text: data.data.message }]);
       }
     });
-    TestWsService.addListener('chat',(chat) => {
+    ws.addListener('chat',(chat) => {
       setMessages(chat.data);
     });
+    ws.sendChatRequest(selectedChat);
 
-    return () => {
-        websocket.close();
+        return () => {
+      ws.removeListeners();
     }
-  }, [selectedChat]);
-
-
-  useEffect(() => {
-    if (ws!== null) {
-          console.log(selectedChat);
-          ws.sendChatRequest(selectedChat);
     }
-  }, [selectedChat]);
+  },[ws,selectedChat])
+
 
   return (
     <>

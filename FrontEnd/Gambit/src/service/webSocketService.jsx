@@ -18,6 +18,12 @@ export const webSocketService = (websocket) => {
         listeners.push({name: name, function: listener});
     }
 
+    const removeListeners = () => {
+        while (listeners.length!==0){
+            listeners.pop();
+        }
+    }
+
     websocket.onmessage = (event) => {
         const parsedEvent = JSON.parse(event.data);
         const listener = listeners.find((listener) => listener.name === parsedEvent.type)
@@ -27,6 +33,7 @@ export const webSocketService = (websocket) => {
     return {
         sendMessage,
         sendChatRequest,
-        addListener
+        addListener,
+        removeListeners
     };
 }

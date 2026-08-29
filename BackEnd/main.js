@@ -37,7 +37,7 @@ wss.on('connection', (ws) => {
         return;
     }
     if(parsedMessage.type === 'chat') {
-      const chat = [{user: 'server', text: 'Welcome to the chat!'},{user: 'me', text: 'Cheers mate!'}];
+      const chat = [{user: 'server', text: `Welcome to chat ${parsedMessage.data}`}];
       ws.send(JSON.stringify({type: 'chat', data: chat}));
         return;
     }

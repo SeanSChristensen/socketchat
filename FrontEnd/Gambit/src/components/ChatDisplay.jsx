@@ -1,5 +1,4 @@
 export function ChatDisplay({messagesProp,currentUser}){
-    console.log({messagesProp,currentUser})
     return (
         <div className="container">{
             messagesProp.map((message, index) => (
