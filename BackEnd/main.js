@@ -3,14 +3,25 @@ const cors = require('cors');
 const websocket = require('ws');
 const app = express();
 const PORT = 3000;
+const pg = require('pg');
 
 app.use(cors());
 app.use(express.json())
 
 const wss = new websocket.Server({ port: 8080 });
 
-app.get('/', (req, res) => {
-  res.send('Hello, Express!');
+const client = new pg.Client({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'gambit',
+  password: 'password',
+  port: 5432,
+});
+
+app.get('/', async (req, res) => {
+  await client.connect();
+  const result = await client.query('SELECT * FROM messages');
+  res.send(result.rows);
 });
 
 app.post('/test', async (req, res) => {
