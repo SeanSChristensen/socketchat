@@ -18,6 +18,8 @@ const client = new pg.Client({
   port: 5432,
 });
 
+client.connect();
+
 app.get('/', async (req, res) => {
   await client.connect();
   const result = await client.query('SELECT * FROM messages');
@@ -38,7 +40,7 @@ wss.on('connection', (ws) => {
   
   ws.send(JSON.stringify({type: 'message', data: {message: 'Welcome to the WebSocket server!', chat:'Chat 1'}}));
 
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
     const parsedMessage = JSON.parse(message);
     console.log(parsedMessage);
     
@@ -48,8 +50,13 @@ wss.on('connection', (ws) => {
         return;
     }
     if(parsedMessage.type === 'chat') {
-      const chat = [{user: 'server', text: `Welcome to chat ${parsedMessage.data}`}];
-      ws.send(JSON.stringify({type: 'chat', data: chat}));
+        const result = await client.query('SELECT * FROM messages');
+        const messages = result.rows
+        const chat = []
+        messages.forEach(message => {
+          chat.push({user: `${message.user_id}`, text: `${message.user_id}: ${message.message}`})
+        });
+        ws.send(JSON.stringify({type: 'chat', data: chat}));
         return;
     }
   });
