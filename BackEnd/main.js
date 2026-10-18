@@ -50,7 +50,20 @@ wss.on('connection', (ws) => {
         return;
     }
     if(parsedMessage.type === 'chat') {
-        const result = await client.query('SELECT * FROM messages');
+        let result = '';
+        switch(parsedMessage.data) {
+            case 'Chat 2':
+                result = await client.query("SELECT * FROM messages where chat_id = '101f58a4-3087-4533-93dc-656089109a6b'");
+                break;
+            case 'Chat 3':
+                result = await client.query("SELECT * FROM messages where chat_id = 'd14e93fc-3693-408d-96e8-89cb9d94146c'");
+                break;
+            case 'Chat 4':
+                result = await client.query("SELECT * FROM messages where chat_id = 'dad4028a-4745-4af1-9941-fcf2f9401de2'");
+                break;
+            default:
+                break;
+        }
         const messages = result.rows
         const chat = []
         messages.forEach(message => {
